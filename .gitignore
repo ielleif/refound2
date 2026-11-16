@@ -1,0 +1,19 @@
+# Dependencies (reinstall with: npm install)
+node_modules/
+
+# Build output
+dist/
+
+# Seller photo uploads (made while using the app)
+server/uploads/
+
+# Local settings: database login + secret key. Copy server/.env.example to server/.env instead.
+server/.env
+.env
+
+# Logs and system files
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+desktop.ini
