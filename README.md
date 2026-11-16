@@ -1,119 +1,138 @@
-# re:found 2 — Pop-collage edition
+# re:found
 
-This is a second UI design for RE:FOUND. It has the same features as the first version, with a new look: chunky 3D lettering, cream blobs, halftone dots, stickers, polaroids, lightning bolts and taped labels. It is **fully separate** from the first version:
+**Find your Pinoy nostalgia here.**
 
-| | Original (`refound`) | This version (`refound2`) |
-|---|---|---|
-| Website | http://localhost:5173 | **http://localhost:5174** |
-| API | port 5050 | **port 5051** |
-| Database | `refound` | **`refound2`** |
-| Seller photos | `refound/server/uploads` | `refound2/server/uploads` |
+re:found is a mock e-commerce marketplace for discontinued Filipino products and collectibles: the things that once sat on a sari-sari shelf, in a lunchbox, or under the bed.
 
-Orders, chats, accounts and listings in one version never show up in the other. You can run both at the same time.
+- Vintage toys and childhood collectibles (fast-food kiddie meal toys, tex, teks, tamiya)
+- Discontinued snacks and collectible packaging
+- Old gadgets and electronic devices (pagers, brick phones, walkmans, brick games)
+- Vintage brand merchandise and promotional items
+- Old magazines, books and komiks
+- Advertising memorabilia (tin signs, calendars, store posters)
 
-### 1. Create the database (once)
-In phpMyAdmin (http://localhost/phpmyadmin), open the **Import** tab, choose **`refound2/database/schema.sql`** and click **Import**. The file creates the `refound2` database by itself, so you don't need to make an empty one first. If you already made one, the import replaces it. The `refound` database is not touched.
+> This is a mock store. Checkout, payment and shipping are all simulated, and no real money is involved.
 
-### 2. Run it
-First time only, copy `server\.env.example` to `server\.env` (it already has the right settings: database `refound2`, port 5051). `.env` is not uploaded to Git.
+---
 
-Open two Command Prompts:
+## Design
+
+The interface uses a **retro pop-collage** style inspired by vintage print ads and scrapbooks:
+
+- **Palette:** red, orange and cream, with mustard yellow accents and dark ink outlines
+- **Typography:** chunky 3D halftone headlines (*Ultra*), elegant serif titles (*DM Serif Display*), handwritten notes (*Permanent Marker*) and clean body text (*Poppins*). All fonts are bundled, so it looks the same offline.
+- **Collage details:** wobbly cream frames, halftone dot corners, tilted stickers, taped polaroids, lightning bolts, hand-drawn arrows and squiggles
+- **Tactile UI:** thick outlines and hard drop shadows on buttons and cards that lift when hovered
+- **Responsive:** works on desktop, tablet and mobile, with a collapsible menu on small screens
+
+## Technologies
+
+| Layer | Tech |
+|---|---|
+| Frontend | **React 18**, React Router, **Vite** |
+| Styling | Hand-written **CSS** (custom properties, container queries, SVG decorations) |
+| Backend | **Node.js** + **Express** (a small REST API between React and the database) |
+| Database | **MySQL** (XAMPP / MariaDB) via `mysql2` |
+| Auth | Password hashing with `bcryptjs`, login sessions with **JWT** |
+| Languages | JavaScript, HTML, CSS, SQL |
+
+## Features
+
+**Shopping**
+- Sign up and log in
+- Browse by collection, search, and filter by condition and price
+- Product pages with a photo carousel (up to 7 photos), a full-screen viewer, era, condition and stock
+- Cart grouped by shop, where you choose which items to check out
+- **Mock checkout:** shipping address, courier (J&T, LBC, Ninja Van, Lalamove), then payment by GCash, Maya, card (with a mock OTP) or COD
+- **Mock shipment tracking:** Placed → Packed → Shipped → Out for Delivery → Delivered, with a timeline
+- Order history with cancel and "order received" actions
+
+**Selling**
+- Any user can open a shop. It's approved instantly (there's no admin) and bound to their personal account, like a Facebook page, so they can switch between buyer and seller without logging out.
+- **Seller Studio:** dashboard, listings (add, edit or delete items with up to 7 photos), orders (move parcels through each shipping step), inbox and shop settings
+
+**Chat**
+- Buyers can message any seller from a product, shop or order, and the item they're asking about is attached to the message
+
+**Pages**
+- Home, Shop, Collections, Sellers, About, and Contact (the contact form saves messages to the database)
+
+---
+
+## Getting started
+
+### Requirements
+- [XAMPP](https://www.apachefriends.org/) (for MySQL and phpMyAdmin)
+- [Node.js](https://nodejs.org/) (LTS version)
+
+### 1. Create the database
+1. Start **Apache** and **MySQL** in the XAMPP Control Panel.
+2. Open <http://localhost/phpmyadmin>, go to the **Import** tab, choose `database/schema.sql`, and click **Import**.
+
+This creates the `refound2` database with demo shops and products.
+
+### 2. Start the server
 ```
-cd C:\xampp82\htdocs\refound2\server
+cd server
 copy .env.example .env
 npm install
 npm start
 ```
+Wait for `MySQL connected - 32 products...` and keep this window open.
+
+`.env` uses XAMPP's defaults (user `root`, no password). If your MySQL has a password, set `DB_PASSWORD` in `server/.env`.
+
+### 3. Start the website
+In a second terminal:
 ```
-cd C:\xampp82\htdocs\refound2\client
+cd client
 npm install
 npm run dev
 ```
-Then open **http://localhost:5174**. You only need `npm install` the first time. The fonts are bundled with the project, so the design looks the same offline.
+Then open **<http://localhost:5174>**.
 
-The demo accounts are the same as in the first version (`juan@refound.ph` / `password123`, and so on), but they live in their own database.
-
----
-
-## Details
+You only need `npm install` the first time.
 
 ## Demo accounts
 
-All passwords are `password123`.
+All demo passwords are `password123`.
 
 | Email | Role |
 |---|---|
-| `juan@refound.ph` | Buyer with no shop yet. Use this account to try "Open a shop". |
-| `ben@refound.ph` | Owns *Tindahan ni Mang Ben* |
-| `mela@refound.ph` | Owns *Kahon ng Laruan* |
-| `pao@refound.ph` | Owns *Pager & Pixels* |
-| `rose@refound.ph` | Owns *Lola's Baul* |
-| `dennis@refound.ph` | Owns *Sari-Sari Archives* |
+| `juan@refound.ph` | Buyer with no shop yet. Use this account to try opening one. |
+| `ben@refound.ph` | Seller: *Tindahan ni Mang Ben* |
+| `mela@refound.ph` | Seller: *Kahon ng Laruan* |
+| `pao@refound.ph` | Seller: *Pager & Pixels* |
+| `rose@refound.ph` | Seller: *Lola's Baul* |
+| `dennis@refound.ph` | Seller: *Sari-Sari Archives* |
 
-You can also sign up with any email.
-
-## Features
-
-**Buyers**
-- Sign up, log in, and edit your profile and default address
-- Browse by category, search, filter by condition and price, and sort
-- Product pages with era, condition, stock and seller info
-- A cart grouped by shop, where you choose which items to check out
-- **Mock checkout:** shipping address → courier (J&T, LBC, Ninja Van, Lalamove) → payment
-  - GCash and Maya: a mock e-wallet screen (any 4–6 digit MPIN works)
-  - Card: card form plus a mock 3-D Secure OTP (any 6 digits work)
-  - COD: marked Paid when the order is delivered
-- Orders are split per shop, like Shopee or Lazada. Each one has a payment reference and a tracking number.
-- **Mock shipment tracking:** Placed → Packed → Shipped → Out for Delivery → Delivered, with a timeline of updates
-- Cancel an order before it's packed (stock is restored and payment refunded), or confirm receipt once it ships
-- **Chat with sellers** from any product, shop or order. The product you came from is attached as a card in the chat.
-
-**Sellers (shop "page" bound to your personal account)**
-- Apply from **Open a shop**. Approval is instant because there's no admin.
-- Use the account menu to switch to your shop, and **Switch to [your name]** to go back. You stay logged in the whole time, like a Facebook page.
-- Seller Studio:
-  - **Dashboard:** revenue, orders to ship, listings and unread chats
-  - **Listings:** add, edit and delete items (name, price, stock, category, condition, era, description, optional photo URL), with a live preview
-  - **Orders:** move each order through the shipment steps, or cancel it
-  - **Inbox:** reply to buyers
-  - **Shop settings:** name, tagline, location, about, and banner colour
-- You can't buy from your own shop.
-
-**Demo shop behaviour.** Nobody runs the 5 seeded shops, so they act on their own:
-- Their orders move forward one shipment step **every 45 seconds**. You can watch a full delivery in about 3 minutes.
-- They send a friendly auto-reply when you message them.
-
-Shops created by real users never do this. Their owners update orders and reply to chats themselves.
+Nobody runs the demo shops, so they act on their own: their orders move forward one shipping step about every 45 seconds, and they send an automatic reply to chat messages.
 
 ## Project structure
 
 ```
-refound/
-├── database/schema.sql      # Tables + seed data (import in phpMyAdmin)
-├── server/                  # Express API
-│   ├── .env.example         # Copy to .env: DB connection (XAMPP defaults)
+├── database/
+│   └── schema.sql          # Tables + demo data (import in phpMyAdmin)
+├── server/                 # Express API
+│   ├── .env.example        # Copy to .env (database connection, port)
 │   └── src/
-│       ├── index.js         # App entry, routes, error handling
-│       ├── db.js            # MySQL connection pool
-│       ├── auth.js          # JWT login middleware
-│       ├── orders.js        # Shipment flow + demo auto-progress
-│       └── routes/          # auth, catalog, shopping (cart/checkout/orders), seller, chat
-└── client/                  # React app (Vite)
+│       ├── index.js        # App entry, routes, error handling
+│       ├── db.js           # MySQL connection pool
+│       ├── auth.js         # JWT login middleware
+│       ├── orders.js       # Mock shipment flow
+│       ├── images.js       # Photo uploads + extra tables
+│       └── routes/         # auth, catalog, shopping, seller, chat
+└── client/                 # React app (Vite)
     └── src/
-        ├── App.jsx          # Routes
-        ├── api.js           # fetch wrapper + ₱ formatting
-        ├── context/         # Logged-in user, shop, cart, unread counts, toasts
-        ├── components/      # Header, Footer, ProductArt, ChatView, SellerLayout…
-        ├── pages/           # Storefront pages
-        │   └── seller/      # Seller Studio pages
-        └── styles.css       # Vintage theme
+        ├── App.jsx         # Routes
+        ├── components/     # Header, Footer, collage decorations, carousel, chat…
+        ├── pages/          # Storefront, About, Contact
+        │   └── seller/     # Seller Studio
+        └── styles.css      # Pop-collage theme
 ```
 
-## Notes
+## Troubleshooting
 
-- Products without a photo get an illustrated "vintage label" made in code. Sellers can paste an image URL to use a real photo instead.
-- Chat refreshes every few seconds (polling), so it needs no extra libraries.
-- No real payments are processed anywhere.
-- **Troubleshooting:**
-  - "Cannot reach the MySQL database": make sure MySQL is running in XAMPP and `schema.sql` has been imported.
-  - "Cannot reach the server": make sure `npm start` is running in `server`.
+- **"Cannot reach the MySQL database":** start MySQL in XAMPP and import `database/schema.sql`.
+- **"Port … is already used by another program":** change `PORT` in `server/.env` to another number, then restart `npm start` and `npm run dev`.
+- **The page loads but shows no products:** make sure the server window (`npm start`) is still running.
