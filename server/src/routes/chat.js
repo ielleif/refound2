@@ -49,7 +49,8 @@ router.get('/conversations', async (req, res) => {
   if (!as) return res.status(403).json({ error: 'No shop.' });
   const other = as === 'buyer' ? 'shop' : 'buyer';
   const [rows] = await db.query(`
-    SELECT c.*, s.name AS shop_name, s.slug AS shop_slug, s.color AS shop_color, u.name AS buyer_name,
+    SELECT c.*, s.name AS shop_name, s.slug AS shop_slug, s.color AS shop_color, s.logo_url AS shop_logo,
+      u.name AS buyer_name, u.avatar_url AS buyer_avatar,
       p.name AS product_name,
       (SELECT body FROM messages WHERE conversation_id = c.id ORDER BY id DESC LIMIT 1) AS last_message,
       (SELECT COUNT(*) FROM messages WHERE conversation_id = c.id AND sender = ? AND is_read = 0) AS unread
@@ -87,7 +88,7 @@ router.get('/conversations/:id/messages', async (req, res) => {
     WHERE m.conversation_id = ? ORDER BY m.id`, [c.id]);
   const [[meta]] = await db.query(`
     SELECT s.id AS shop_id, s.name AS shop_name, s.slug AS shop_slug, s.color AS shop_color, s.is_demo,
-           u.name AS buyer_name
+           s.logo_url AS shop_logo, u.name AS buyer_name, u.avatar_url AS buyer_avatar
     FROM conversations c JOIN shops s ON s.id = c.shop_id JOIN users u ON u.id = c.buyer_id WHERE c.id = ?`, [c.id]);
   res.json({ conversation: { ...c, ...meta }, messages: msgs });
 });

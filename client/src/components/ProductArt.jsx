@@ -172,7 +172,12 @@ function Calendar() {
   );
 }
 
-const ART = { toys: [Toy, Top], snacks: [Snack, ChipBag], gadgets: [Gadget, Phone], merch: [Merch, Mug], print: [Print, Magazine], ads: [Ad, Calendar] };
+const ART = {
+  toys: [Toy, Top], fastfood: [Toy, Merch], gadgets: [Gadget, Phone], print: [Print, Magazine],
+  currency: [Calendar, Print], heritage: [Mug, Ad],
+  // older collection names, kept so any existing listings still get a picture
+  snacks: [Snack, ChipBag], merch: [Merch, Mug], ads: [Ad, Calendar],
+};
 
 // `seed` (usually the product id) picks between illustrations so a grid doesn't repeat.
 export default function ProductArt({ category, color: rawColor = '#D9412B', era, image, className = '', label, seed = 0 }) {

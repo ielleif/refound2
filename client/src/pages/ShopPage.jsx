@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { api } from '../api';
 import { useApp } from '../context/AppContext';
-import { ProductCard, Loading, Empty } from '../components/Common';
+import { Avatar, ProductCard, Loading, Empty } from '../components/Common';
 
 export default function ShopPage() {
   const { slug } = useParams();
@@ -27,9 +27,9 @@ export default function ShopPage() {
 
   return (
     <>
-      <section className="shop-banner" style={{ '--c': shop.color }}>
+      <section className={`shop-banner ${shop.cover_url ? 'has-cover' : ''}`} style={{ '--c': shop.color, backgroundImage: shop.cover_url ? `url("${shop.cover_url}")` : undefined }}>
         <div className="container shop-banner-inner">
-          <span className="shop-mark">{shop.name[0]}</span>
+          <Avatar src={shop.logo_url} name={shop.name} color="var(--cream)" square className="shop-mark" />
           <div className="shop-banner-text">
             <span className="mono-label">Est. {new Date(shop.created_at).getFullYear()} · {shop.location || 'Philippines'}</span>
             <h1>{shop.name}</h1>

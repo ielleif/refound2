@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
 import { useApp } from '../context/AppContext';
+import ProfilePhotos from '../components/ProfilePhotos';
+import { Avatar } from '../components/Common';
 
 export default function Account() {
   const { user, setUser, shop, toast } = useApp();
@@ -20,6 +22,15 @@ export default function Account() {
     <div className="container section">
       <span className="mono-label">Personal profile</span>
       <h1 className="display">My Account</h1>
+      <ProfilePhotos
+        name={user.name}
+        subtitle={`${user.email}${user.created_at ? ` · Member since ${new Date(user.created_at).getFullYear()}` : ''}`}
+        avatar={user.avatar_url} cover={user.cover_url} color="#F2661B"
+        onSave={async (kind, url) => {
+          const r = await api.put('/auth/me', { [kind === 'avatar' ? 'avatar_url' : 'cover_url']: url });
+          setUser(r.user);
+        }}
+      />
       <div className="account-grid">
         <form className="step-card form" onSubmit={save}>
           <h3>Profile &amp; default address</h3>
@@ -35,7 +46,7 @@ export default function Account() {
             {shop ? (
               <>
                 <div className="seller-box" style={{ '--c': shop.color }}>
-                  <span className="shop-chip-mark">{shop.name[0]}</span>
+                  <Avatar src={shop.logo_url} name={shop.name} color={shop.color} square size={48} />
                   <div><strong>{shop.name}</strong><small>{shop.tagline || 'Your shop'}</small></div>
                 </div>
                 <p className="muted small">Your shop is linked to this account. Switching to it doesn't log you out.</p>

@@ -19,6 +19,8 @@ CREATE TABLE users (
   password_hash VARCHAR(255) NOT NULL,
   phone         VARCHAR(30)  DEFAULT NULL,
   address       VARCHAR(255) DEFAULT NULL,
+  avatar_url    VARCHAR(500) DEFAULT NULL,  -- profile picture
+  cover_url     VARCHAR(500) DEFAULT NULL,  -- cover photo
   created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -32,6 +34,8 @@ CREATE TABLE shops (
   description TEXT,
   location    VARCHAR(100) DEFAULT NULL,
   color       VARCHAR(20)  DEFAULT '#D9412B',
+  logo_url    VARCHAR(500) DEFAULT NULL,  -- shop profile picture
+  cover_url   VARCHAR(500) DEFAULT NULL,  -- shop cover photo
   is_demo     TINYINT(1)   DEFAULT 0,
   created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -166,12 +170,12 @@ CREATE TABLE messages (
 --  SEED DATA  (all demo passwords: password123)
 -- =========================================================
 INSERT INTO categories (id, slug, name, blurb) VALUES
-(1,'toys','Toys & Childhood','Kiddie meal toys, tex, teks, tamiya and recess treasures.'),
-(2,'snacks','Snacks & Packaging','Discontinued sweets and the wrappers we couldn''t throw away.'),
-(3,'gadgets','Old Gadgets','Bricks, pagers, walkmans and the beep of the 90s.'),
-(4,'merch','Brand Merchandise','Promo items, freebies and limited giveaways.'),
-(5,'print','Magazines & Komiks','Komiks, magazines, primers and paperbacks.'),
-(6,'ads','Advertising Memorabilia','Tin signs, calendars, posters and store displays.');
+(1,'toys','Toys & Action Figures','Die-cast super robots, superhero figures, toy guns and recess classics.'),
+(2,'fastfood','Fast-Food Collectibles','Retired Jollibee mascots and kiddie meal toys from the 80s and 90s.'),
+(3,'gadgets','Gadgets & Radios','Pagers, transistor radios, cassette players and virtual pets.'),
+(4,'print','Komiks, Magazines & Posters','Golden-age komiks, movie magazines and theater posters.'),
+(5,'currency','Coins, Stamps & Documents','Old pesos, revolutionary notes, stamps, cédulas and tickets.'),
+(6,'heritage','Antiques & Heritage','Furniture, flat irons, brassware and heirlooms from old Filipino homes.');
 
 INSERT INTO users (id, name, email, password_hash, phone, address) VALUES
 (1,'Benjamin Cruz','ben@refound.ph','$2b$10$UJeQSDCIZTfjlrWA3WnXfeVvnGpCrAPNwyobA8Pc19/zydtsOPRQy','09171234567','Sta. Cruz, Manila'),
@@ -182,48 +186,52 @@ INSERT INTO users (id, name, email, password_hash, phone, address) VALUES
 (6,'Juan Dela Cruz','juan@refound.ph','$2b$10$UJeQSDCIZTfjlrWA3WnXfeVvnGpCrAPNwyobA8Pc19/zydtsOPRQy','09991234567','123 Mabini St., Brgy. San Roque, Marikina City');
 
 INSERT INTO shops (id, user_id, name, slug, tagline, description, location, color, is_demo) VALUES
-(1,1,'Tindahan ni Mang Ben','tindahan-ni-mang-ben','Sari-sari nostalgia since ''78','Old stock from my father''s sari-sari store in Sta. Cruz — wrappers, bottles, and store fixtures we never threw away.','Manila','#D9412B',1),
-(2,2,'Kahon ng Laruan','kahon-ng-laruan','Recess, revisited','Kiddie meal toys, tex, teks, tamiya and everything that used to live in a shoebox under the bed.','Bulacan','#E3A82B',1),
-(3,3,'Pager & Pixels','pager-and-pixels','Tested. Cleaned. Still beeping.','Refurbished gadgets from the 80s to early 2000s. Every working unit is tested before shipping.','Quezon City','#2F5D62',1),
-(4,4,'Lola''s Baul','lolas-baul','Paper treasures from the old chest','Komiks, magazines, calendars and printed ephemera from my lola''s baul in Vigan.','Ilocos Sur','#1F3B2D',1),
-(5,5,'Sari-Sari Archives','sari-sari-archives','Brand memories, kept','Promo merch, giveaways and advertising pieces from Philippine brands across the decades.','Cebu','#7A3E2B',1);
+(1,1,'Tindahan ni Mang Ben','tindahan-ni-mang-ben','Heirlooms from the old bahay na bato','Furniture, flat irons, brassware and family heirlooms from my father''s ancestral house in Sta. Cruz.','Manila','#D9412B',1),
+(2,2,'Kahon ng Laruan','kahon-ng-laruan','Super robots & recess classics','Die-cast robots, superhero figures, toy guns and everything that used to live in a shoebox under the bed.','Bulacan','#E3A82B',1),
+(3,3,'Pager & Pixels','pager-and-pixels','Tested. Cleaned. Still beeping.','Pagers, transistor radios, cassette players and virtual pets from the 60s to the 2000s.','Quezon City','#2F5D62',1),
+(4,4,'Lola''s Baul','lolas-baul','Paper treasures from the old chest','Komiks, movie magazines, posters, coins, stamps and documents from my lola''s baul in Vigan.','Ilocos Sur','#1F3B2D',1),
+(5,5,'Sari-Sari Archives','sari-sari-archives','Fast-food toys, kept since the 80s','Retired Jollibee mascots and kiddie meal toys, kept in their boxes for decades.','Cebu','#7A3E2B',1);
 
-INSERT INTO products (shop_id, category_id, name, price, description, condition_grade, era, stock, art_color) VALUES
--- Toys (Kahon ng Laruan)
-(2,1,'Kiddie Meal Spinning Top Toy',350,'Fast-food kiddie meal giveaway spinning top, still in its original sealed plastic. A recess favorite.','Sealed','1997',3,'#D9412B'),
-(2,1,'Mini 4WD Racer — Unassembled Kit',1450,'Complete unassembled mini 4WD kit with stickers and motor. Box shows light shelf wear.','Mint','1996',1,'#2F5D62'),
-(2,1,'Tex Card Bundle (120 pcs)',280,'Assorted tex cards from the 80s–90s, including cartoon and action series. Rubber band included, as tradition demands.','Good','1990s',5,'#E3A82B'),
-(2,1,'Teks Game Cards — Komiks Series',320,'Uncut sheet-style teks with comic panels on the back. Perfect for framing.','Excellent','1980s',2,'#F26B1D'),
-(2,1,'Chip Snack Tazos Collection (40 pcs)',600,'Forty plastic tazos from snack bag promos, with the original collector album.','Good','1998',1,'#7A3E2B'),
-(2,1,'Fast-Food Burger Mascot Figurine',450,'Small PVC mascot figurine from a 90s kiddie meal promo. Paint still bright.','Excellent','1995',2,'#D9412B'),
--- Snacks & packaging (Mang Ben)
-(1,2,'Orange Soda Glass Bottle (Discontinued)',750,'Classic ribbed glass bottle from a discontinued orange soda line. Empty, cleaned, no chips.','For Display','1980s',4,'#F26B1D'),
-(1,2,'Bubble Gum Display Box (Empty)',520,'Sari-sari store counter box for a classic chewing gum brand, with comic wrapper art on the sides.','For Display','1990s',2,'#E3A82B'),
-(1,2,'Chocolate Bar Wrapper Set (6 pcs)',300,'Six flattened wrappers from a local chocolate bar no longer in production. Sleeved.','Good','1980s',3,'#7A3E2B'),
-(1,2,'Haw Flakes Roll — Old Packaging',180,'Sealed roll in the old paper packaging design. Not for consumption — display only.','Sealed','2003',6,'#D9412B'),
-(1,2,'Fish Cracker Tin Canister',890,'Large tin canister for fish crackers, the kind that sat on every sari-sari counter. Lid intact.','Good','1970s',1,'#2F5D62'),
--- Gadgets (Pager & Pixels)
-(3,3,'Easycall Alphanumeric Pager',1800,'Fully working pager with belt clip. Display is clear and the beep still works. Battery not included.','Excellent','1994',2,'#2F5D62'),
-(3,3,'Classic Brick Phone 3310 (Working)',2500,'The indestructible one. Tested, holds charge for 2 days, Snake II included free of charge.','Good','2000',3,'#1E1B18'),
-(3,3,'Brick Game 9999-in-1 Handheld',650,'Handheld LCD brick game. Sound toggle works. Some scratches on the screen cover.','Good','1990s',4,'#E3A82B'),
-(3,3,'8-Bit Family Computer + 2 Cartridges',3200,'Family computer clone with two controllers and two cartridges. Tested on a CRT and an LCD with AV.','Good','1990s',1,'#D9412B'),
-(3,3,'Portable Cassette Player with Belt Clip',2800,'Auto-reverse portable cassette player. New belts installed; plays clean. Earphones not included.','Excellent','1989',1,'#7A3E2B'),
-(3,3,'Virtual Pet Egg — Original Run',2200,'Original-run virtual pet in translucent shell. New battery, screen fully readable.','Excellent','1997',1,'#F26B1D'),
--- Brand merch (Sari-Sari Archives)
-(5,4,'Cola Promo Bottle Cap — "349"',1200,'One of the infamous 349 promo caps. A strange piece of Philippine marketing history.','Good','1992',1,'#1E1B18'),
-(5,4,'Beer Brand Glass Mug — Old Logo',680,'Thick glass mug with the old brewery logo, from a 70s pulutan house.','Excellent','1970s',3,'#E3A82B'),
-(5,4,'Telco Promo Shirt — "Buddy" Era',540,'Promo shirt from an early-2000s telco campaign. Size L, never worn.','Mint','2001',2,'#2F5D62'),
-(5,4,'Christmas Mascot Plush (Promo)',950,'Fast-food Christmas promo plush with the hang tag still on.','Mint','2001',1,'#D9412B'),
-(5,4,'Gas Station Promo Tumbler',380,'Plastic tumbler given out with full-tank purchases. Graphics unfaded.','Excellent','1990s',4,'#F26B1D'),
--- Print (Lola''s Baul)
-(4,5,'Funny Komiks #512',420,'Classic children''s komiks issue, complete with centerfold. Slight yellowing.','Good','1988',2,'#E3A82B'),
-(4,5,'Liwayway Magazine — Holiday Issue',650,'Holiday issue of the long-running Tagalog weekly, with serialized nobela and vintage ads.','Fair','1972',1,'#D9412B'),
-(4,5,'Superheroine Komiks — Origin Reprint',1500,'Reprint of a classic Filipino superheroine origin story. Cover vivid, spine tight.','Excellent','1970s',1,'#2F5D62'),
-(4,5,'Abakada Reading Primer',350,'The primer an entire generation learned to read from. Light pencil marks on two pages.','Good','1960s',3,'#F26B1D'),
-(4,5,'Tagalog Klasiks Bundle (5 issues)',980,'Five issues of a Tagalog klasiks title. Covers detached on one; all pages present.','Fair','1960s',1,'#7A3E2B'),
--- Advertising (Mang Ben + Lola''s Baul)
-(1,6,'Enamel Tin Sign — Cola Brand',3800,'Double-sided enamel store sign, the kind nailed to sari-sari posts. Honest rust at the edges.','Fair','1960s',1,'#D9412B'),
-(4,6,'Soft Drink Wall Calendar',1100,'Full twelve-month wall calendar from a soft drink brand, with painted Filipiniana illustrations.','Good','1978',1,'#E3A82B'),
-(5,6,'Toothpaste Store Poster',720,'Rolled store poster for a local toothpaste brand. Never pinned.','Mint','1980s',2,'#2F5D62'),
-(1,6,'Soda Bottle Wooden Crate',2400,'24-slot wooden delivery crate with stenciled bottler name. Sturdy, great as a shelf.','Good','1970s',1,'#7A3E2B'),
-(5,6,'Soap Magazine Ad Print (Framed)',560,'Original magazine ad page, mounted and framed in narra.','Excellent','1960s',2,'#F26B1D');
+-- ---------- Products (photos live in client/public/products) ----------
+INSERT INTO products (shop_id, category_id, name, price, description, condition_grade, era, stock, image_url, art_color) VALUES
+(2,1,'Captain Barbell Action Figure (Sealed)',1850,'Mars Ravelo''s Captain Barbell in his yellow suit and red cape, still sealed in the original bag with stand and barbell accessory.','Sealed','1990s',1,'/products/captain-barbell-figure.jpg','#C8321F'),
+(2,1,'Voltes V Die-Cast Super Robot',8500,'Heavy die-cast Voltes V with chrome details and the original chest emblem. The anime that ruled Filipino TV in the late 70s. Paint wear on the fists.','Good','1970s',1,'/products/voltes-v-die-cast.jpg','#F2661B'),
+(2,1,'Mazinger Z Chogokin with Box',6800,'Bandai Eternal Hero Series reissue of the classic die-cast Mazinger Z, with red Jet Scrander wings and the illustrated box.','Excellent',NULL,1,'/products/mazinger-z-chogokin-boxed.jpg','#F4B532'),
+(2,1,'Chrome Walking Robot Toy',900,'Battery-operated walking robot in shiny chrome with blue arms and a light-up chest. A tiangge favorite. Walks and lights up with fresh batteries.','Good','1990s',2,'/products/chrome-walking-robot.jpg','#E8452C'),
+(2,1,'Rambo Toy Pistols (Set of 2)',1600,'Two Rambo-branded toy pistols with brown grips, one with a long barrel and one with a spare magazine. No bullets included.','Good','1980s',1,'/products/rambo-toy-pistols.jpg','#B4532A'),
+(2,1,'Miniature Philippine Jeepney Toy with Box',3200,'Detailed die-cast jeepney with chrome horses, side mirrors and painted panels. Comes with its original box and owner''s manual.','Excellent','1980s',1,'/products/miniature-jeepney-boxed.jpg','#C8321F'),
+(2,1,'Tarsan Teks Cards Bundle (60+ pcs)',380,'A thick stack of Tarsan teks game cards with comic panels on the back, held together like they were at recess.','Good','1980s',3,'/products/tarsan-teks-cards.jpg','#F2661B'),
+(5,2,'Jollibee Jolly Band Figurine Set (8 pcs)',6500,'Eight Jolly Band musician figures on coloured bases, each with its own instrument. Shelf-displayed. The two large figures in the photo are not included.','Good','1980s',1,'/products/jolly-band-figure-set.jpg','#F4B532'),
+(5,2,'Jollibee Jolly Band Drummer (Sealed)',1800,'Jollibee on the drums from the Jolly Band series, still sealed in its plastic. The drum reads "Jolly Band".','Sealed','1980s',1,'/products/jolly-band-jollibee-drummer.jpg','#E8452C'),
+(5,2,'Champ Boxer Mascot Figure',1500,'The hamburger-headed boxer who promoted the Champ burger, in his robe, gloves and championship belt. He was retired in 2004.','Excellent',NULL,1,'/products/jollibee-champ-figure.jpg','#B4532A'),
+(5,2,'Chickee Chicken Mascot Figure',850,'Vinyl figure of Chickee, the white hen introduced in 1983 to represent Chickenjoy, wearing her yellow necklace.','Good','1980s',1,'/products/jollibee-chickee-figure.jpg','#C8321F'),
+(5,2,'Mico Milkshake Mascot Train Toy',950,'Mico, the boy with the milkshake-cup cap, riding a pink and blue train car. One of the mascots retired in the mid-1990s.','Good','1980s',1,'/products/jollibee-mico-train.jpg','#F2661B'),
+(5,2,'Lady Moo Mascot Train Toy',950,'Lady Moo, the milkshake mascot, waving from her green train car with crates. Name plate still readable on the side.','Good','1980s',1,'/products/jollibee-lady-moo-train.jpg','#F4B532'),
+(3,3,'USA Mobility Alphanumeric Pager',1200,'Black alphanumeric pager with a green backlit screen and scroll buttons. The beep that meant "call me back".','Good','2000s',2,'/products/usa-mobility-pager.jpg','#E8452C'),
+(3,3,'Silver Portable Cassette Player-Recorder',2600,'Slim silver cassette player-recorder with piano-key buttons and a flip-up door. Plays and rewinds; new belt installed.','Good','1980s',1,'/products/portable-cassette-player.jpg','#B4532A'),
+(3,3,'Standard All-Transistor Pocket Radio',1500,'Pocket-sized Standard all-transistor AM radio with a chrome speaker grille. Picks up local AM stations.','Good','1960s',1,'/products/standard-transistor-radio.jpg','#C8321F'),
+(3,3,'Sunny Solid State Portable Radio',2200,'Wood-grain Sunny radio with a teal speaker panel and a starburst tuning dial. Carry handle intact.','Good','1970s',1,'/products/sunny-solid-state-radio.jpg','#F2661B'),
+(3,3,'Retro-Style AM/FM Radio (Copper Finish)',1350,'A newer radio made to look vintage, with a copper body, chrome knobs and a built-in USB/TF player. Rechargeable.','Mint',NULL,3,'/products/retro-style-am-fm-radio.jpg','#F4B532'),
+(3,3,'Tamagotchi Virtual Pet (Translucent Blue)',2200,'Egg-shaped Tamagotchi in clear blue with its keychain. Screen fully readable; new battery installed.','Excellent','1990s',1,'/products/tamagotchi-translucent-blue.jpg','#E8452C'),
+(4,4,'Hiwaga Komiks Blg. 154 (August 22, 1956)',2200,'Ace Publications'' Hiwaga Komiks with a dancing-couple cover, priced at 25 sentimos. Spine wear, all pages present.','Fair','1956',1,'/products/hiwaga-komiks-154.jpg','#B4532A'),
+(4,4,'Pantastik Komiks Blg. 5 (February 17, 1951)',2800,'Early issue of Pantastik Komiks featuring "Reynaldo" on the cover, for 25 sentimos. Cover worn at the edges.','Fair','1951',1,'/products/pantastik-komiks-5.jpg','#C8321F'),
+(4,4,'Mars Ravelo''s Lastikman Komiks Magazine',650,'Lastikman stretching into action on the cover, from the issues priced at ₱7.50. Light creasing.','Good','1990s',2,'/products/lastikman-komiks.jpg','#F2661B'),
+(4,4,'Ilang-Ilang Magazine – "Bertong Balutan" Cover (March 30, 1950)',2400,'Movie magazine cover promoting the film Bertong Balutan, with hand-painted art of the stars. Priced at 50 sentimos.','Fair','1950',1,'/products/ilang-ilang-magazine-1950.jpg','#F4B532'),
+(4,4,'"Hanggang May Buhay" Movie Poster – Bong Revilla Jr. & Dawn Zulueta',1400,'Theater poster for the 1992 action film from Bonanza Films, directed by Pepe Marcos, starring Ramon "Bong" Revilla Jr. and Dawn Zulueta.','Good','1992',1,'/products/hanggang-may-buhay-poster.jpg','#E8452C'),
+(4,5,'1903 Philippine One Peso Silver Coin',4800,'US–Philippine silver peso showing the Filipina with a hammer and anvil beside Mayon Volcano, with the US eagle on the reverse.','Good','1903',1,'/products/philippine-peso-1903.jpg','#B4532A'),
+(4,5,'Spanish "Dos Mundos" Pillar Dollar (1744)',18500,'Silver columnaria (8 reales) showing two worlds between the Pillars of Hercules. It circulated in the Philippines during the galleon trade.','Good','1744',1,'/products/dos-mundos-pillar-dollar-1744.jpg','#C8321F'),
+(4,5,'República Filipina One Peso Notes (Pair)',7500,'Two paper one-peso notes from the First Philippine Republic, printed with the names of Emilio Aguinaldo and Pedro Paterno.','Fair','1898',1,'/products/republica-filipina-peso-notes.jpg','#F2661B'),
+(4,5,'1944 "VICTORY" Overprint 1-Peso Commonwealth Stamp',450,'Orange one-peso Commonwealth stamp overprinted VICTORY after liberation, showing a church scene. Unused with sharp perforations.','Mint','1944',2,'/products/victory-1-peso-stamp-1944.jpg','#F4B532'),
+(4,5,'Philippine Islands 4-Centavo McKinley Stamp',250,'Red 4-centavo stamp of the US-administered Philippine Islands with a portrait of President McKinley.','Good','Early 1900s',3,'/products/mckinley-4-centavos-stamp.jpg','#E8452C'),
+(4,5,'1920 Manila Cédula (Certificate of Registration)',3500,'Handwritten cédula personal from the Government of the Philippine Islands, paid at Manila for the calendar year 1920. Signed by the collector.','Fair','1920',1,'/products/cedula-1920-manila.jpg','#B4532A'),
+(4,5,'Paper Bus Tickets Set (₱20, ₱30, ₱50)',150,'Three punch-style city bus tickets in blue, purple and green, from before tap cards replaced them.','Good','2010s',4,'/products/bus-tickets-set.jpg','#C8321F'),
+(1,6,'Butaka Planter''s Lounge Chair',28000,'Hardwood butaka with a woven rattan seat and long extended armrests, the classic lounge chair of the bahay na bato. Pick-up or freight only.','Excellent','Pre-war',1,'/products/butaka-planters-chair.jpg','#F2661B'),
+(1,6,'Charcoal Flat Iron (Plantsa de Uling)',1800,'Cast-iron box iron with a latched lid and vented sides, heated with live charcoal like lola used to. Wooden handle intact.','Good','Pre-war',2,'/products/charcoal-flat-iron.jpg','#F4B532'),
+(1,6,'Antique Brass Pan Irons (Set of 2)',3200,'Two early pan-style irons with wooden handles, filled with embers to press clothes. Aged patina throughout.','Fair',NULL,1,'/products/brass-pan-irons.jpg','#E8452C'),
+(1,6,'Maranao Brass Betel Nut Box (Lutuan)',9500,'Engraved Maranao brass box with silver-coloured inlay and ring handles, made to hold betel nut and leaves.','Excellent','Mid-1900s',1,'/products/maranao-betel-nut-box.jpg','#B4532A'),
+(1,6,'Katipunan Sun Emblem Medal',2500,'Bronze-toned sun medal with a carved face and pointed rays, hung from a triangular tab, in the style of the Katipunan sun. Display piece.','For Display',NULL,1,'/products/katipunan-sun-medal.jpg','#C8321F'),
+(1,6,'Vintage Pewter Lidded Jar',1600,'Heavy pewter jar with a ribbed neck and a screw-on cap, the kind kept for tea leaves or drinking water.','Good',NULL,1,'/products/pewter-lidded-jar.jpg','#F2661B'),
+(1,6,'Champion Whisky Face-Shaped Bottle (Empty)',750,'Clear glass whisky bottle moulded with a carved face, with the Champion neck label still on. Empty, for display.','For Display',NULL,1,'/products/champion-whisky-face-bottle.jpg','#F4B532');
+
+-- Each listing's photo also goes into the gallery table (sellers can add up to 7)
+INSERT INTO product_images (product_id, url, sort_order) SELECT id, image_url, 0 FROM products;

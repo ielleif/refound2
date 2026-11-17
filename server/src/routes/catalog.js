@@ -5,7 +5,7 @@ const { attachImages } = require('../images');
 
 const PRODUCT_SELECT = `
   SELECT p.*, c.slug AS category_slug, c.name AS category_name,
-         s.name AS shop_name, s.slug AS shop_slug, s.location AS shop_location, s.color AS shop_color
+         s.name AS shop_name, s.slug AS shop_slug, s.location AS shop_location, s.color AS shop_color, s.logo_url AS shop_logo
   FROM products p
   JOIN categories c ON c.id = p.category_id
   JOIN shops s ON s.id = p.shop_id`;

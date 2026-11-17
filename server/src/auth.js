@@ -15,7 +15,7 @@ async function requireAuth(req, res, next) {
   try {
     const { id } = jwt.verify(token, SECRET);
     const [[user]] = await db.query(
-      'SELECT id, name, email, phone, address, created_at FROM users WHERE id = ?', [id]);
+      'SELECT id, name, email, phone, address, avatar_url, cover_url, created_at FROM users WHERE id = ?', [id]);
     if (!user) return res.status(401).json({ error: 'Account not found.' });
     const [[shop]] = await db.query('SELECT * FROM shops WHERE user_id = ?', [id]);
     req.user = user;

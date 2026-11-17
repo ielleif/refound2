@@ -31,6 +31,11 @@ async function ensureSchema() {
       message    TEXT NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`);
+  // Profile pictures and cover photos (added later; safe to run every start)
+  for (const [table, col] of [['users', 'avatar_url'], ['users', 'cover_url'], ['shops', 'logo_url'], ['shops', 'cover_url']]) {
+    const [have] = await db.query(`SHOW COLUMNS FROM ${table} LIKE ?`, [col]);
+    if (!have.length) await db.query(`ALTER TABLE ${table} ADD COLUMN ${col} VARCHAR(500) DEFAULT NULL`);
+  }
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
 
@@ -52,7 +57,7 @@ function saveUploads(dataUrls) {
 
 // Keeps only safe URLs (our uploads or http/https links), max 7.
 const cleanList = list => (Array.isArray(list) ? list : [])
-  .filter(u => typeof u === 'string' && /^(\/uploads\/[\w.-]+|https?:\/\/\S+)$/.test(u.trim()))
+  .filter(u => typeof u === 'string' && /^(\/uploads\/[\w.-]+|\/products\/[\w.-]+|https?:\/\/\S+)$/.test(u.trim()))
   .map(u => u.trim()).slice(0, MAX_IMAGES);
 
 // Replaces a product's photos; the first one becomes the cover (products.image_url).
@@ -78,4 +83,11 @@ async function attachImages(products) {
   return products;
 }
 
-module.exports = { MAX_IMAGES, UPLOAD_DIR, ensureSchema, saveUploads, setProductImages, attachImages };
+// A single photo URL for profiles/covers: our uploads or an http(s) link, or empty to remove.
+function cleanPhoto(u) {
+  if (u === null || u === '') return null;
+  if (typeof u !== 'string') return undefined;
+  return /^(\/uploads\/[\w.-]+|\/products\/[\w.-]+|https?:\/\/\S+)$/.test(u.trim()) ? u.trim() : undefined;
+}
+
+module.exports = { MAX_IMAGES, UPLOAD_DIR, ensureSchema, saveUploads, setProductImages, attachImages, cleanPhoto };

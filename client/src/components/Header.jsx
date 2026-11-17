@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { Logo } from './Common';
+import { Avatar, Logo } from './Common';
 
-const CATS = [['toys', 'Toys & Childhood'], ['snacks', 'Snacks & Packaging'], ['gadgets', 'Old Gadgets'],
-  ['merch', 'Brand Merch'], ['print', 'Komiks & Print'], ['ads', 'Advertising']];
+const CATS = [['toys', 'Toys & Action Figures'], ['fastfood', 'Fast-Food Collectibles'], ['gadgets', 'Gadgets & Radios'],
+  ['print', 'Komiks, Magazines & Posters'], ['currency', 'Coins, Stamps & Documents'], ['heritage', 'Antiques & Heritage']];
 
 function useOutside(ref, close) {
   useEffect(() => {
@@ -44,13 +44,14 @@ export default function Header() {
 
         <nav className="header-nav">
           <NavLink to="/" end>Home</NavLink>
-          <NavLink to="/shop" end>Shop</NavLink>
-          <div className="dropdown" ref={catRef}>
-            <button className={`dropdown-btn ${cats ? 'open' : ''}`} onClick={() => setCats(c => !c)} aria-expanded={cats}>
-              Collections <span aria-hidden>▾</span>
-            </button>
+          {/* Shop goes to all finds; the arrow (or hovering) opens the collections */}
+          <div className={`dropdown nav-split ${cats ? 'open' : ''}`} ref={catRef}
+            onMouseEnter={() => setCats(true)} onMouseLeave={() => setCats(false)}>
+            <NavLink to="/shop" end className={() => (loc.pathname === '/shop' ? 'active' : '')}>Shop</NavLink>
+            <button className="dropdown-caret" onClick={() => setCats(c => (window.matchMedia('(hover: hover)').matches ? true : !c))} aria-expanded={cats} aria-label="Show collections">▾</button>
             {cats && (
               <div className="dropdown-menu">
+                <Link to="/shop" className="dropdown-all">All finds</Link>
                 {CATS.map(([slug, label]) => <Link key={slug} to={`/shop?category=${slug}`}>{label}</Link>)}
               </div>
             )}
@@ -80,20 +81,20 @@ export default function Header() {
               </Link>
               <div className="account" ref={menuRef}>
                 <button className="account-btn" onClick={() => setMenu(m => !m)} aria-expanded={menu}>
-                  <span className="avatar">{user.name[0]}</span>
+                  <Avatar src={user.avatar_url} name={user.name} />
                   <span className="account-name">{user.name.split(' ')[0]}</span>
                   <span aria-hidden>▾</span>
                 </button>
                 {menu && (
                   <div className="menu" onClick={() => setMenu(false)}>
-                    <div className="menu-head"><strong>{user.name}</strong><span>{user.email}</span></div>
+                    <div className="menu-head menu-head-row"><Avatar src={user.avatar_url} name={user.name} size={42} /><div><strong>{user.name}</strong><span>{user.email}</span></div></div>
                     <Link to="/account">My Account</Link>
                     <Link to="/orders">My Purchases</Link>
                     <Link to="/messages">Messages</Link>
                     <div className="menu-sep">Switch profile</div>
                     {shop ? (
                       <Link to="/seller" className="menu-switch">
-                        <span className="avatar avatar-sq" style={{ background: shop.color }}>{shop.name[0]}</span>
+                        <Avatar src={shop.logo_url} name={shop.name} color={shop.color} square />
                         <span><strong>{shop.name}</strong><small>Go to Seller Studio{unread.shop ? ` · ${unread.shop} new` : ''}</small></span>
                       </Link>
                     ) : (

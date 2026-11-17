@@ -2,6 +2,7 @@ const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const db = require('../db');
 const { sign, requireAuth } = require('../auth');
+const { saveUploads, cleanPhoto } = require('../images');
 
 router.post('/signup', async (req, res) => {
   const { name, email, password } = req.body;
@@ -30,12 +31,32 @@ router.post('/login', async (req, res) => {
 
 router.get('/me', requireAuth, (req, res) => res.json({ user: req.user, shop: req.shop }));
 
+// Update only the profile fields that were sent (name, phone, address, avatar_url, cover_url)
 router.put('/me', requireAuth, async (req, res) => {
-  const { name, phone, address } = req.body;
-  await db.query('UPDATE users SET name = COALESCE(?, name), phone = ?, address = ? WHERE id = ?',
-    [name?.trim() || null, phone || null, address || null, req.user.id]);
-  const [[user]] = await db.query('SELECT id, name, email, phone, address FROM users WHERE id = ?', [req.user.id]);
+  const b = req.body, set = {};
+  if ('name' in b) {
+    if (!b.name?.trim()) return res.status(400).json({ error: 'Name cannot be empty.' });
+    set.name = b.name.trim().slice(0, 100);
+  }
+  if ('phone' in b) set.phone = b.phone?.trim() || null;
+  if ('address' in b) set.address = b.address?.trim() || null;
+  for (const k of ['avatar_url', 'cover_url']) {
+    if (k in b) {
+      const v = cleanPhoto(b[k]);
+      if (v === undefined) return res.status(400).json({ error: 'That photo link is not allowed.' });
+      set[k] = v;
+    }
+  }
+  const keys = Object.keys(set);
+  if (keys.length) await db.query(`UPDATE users SET ${keys.map(k => `${k} = ?`).join(', ')} WHERE id = ?`, [...keys.map(k => set[k]), req.user.id]);
+  const [[user]] = await db.query('SELECT id, name, email, phone, address, avatar_url, cover_url, created_at FROM users WHERE id = ?', [req.user.id]);
   res.json({ user });
+});
+
+// Photo upload for any logged-in user (profile picture, cover photo)
+router.post('/uploads', requireAuth, async (req, res) => {
+  try { res.json({ urls: saveUploads(req.body.images) }); }
+  catch (e) { res.status(400).json({ error: e.message }); }
 });
 
 module.exports = router;

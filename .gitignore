@@ -17,3 +17,6 @@ npm-debug.log*
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Original photo files (the site uses client/public/products instead)
+img/

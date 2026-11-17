@@ -4,7 +4,7 @@ const db = require('../db');
 const { requireAuth, requireShop } = require('../auth');
 const { FLOW, setStatus } = require('../orders');
 const { loadOrders } = require('./shopping');
-const { saveUploads, setProductImages, attachImages, MAX_IMAGES } = require('../images');
+const { saveUploads, setProductImages, attachImages, MAX_IMAGES, cleanPhoto } = require('../images');
 
 router.use(requireAuth);
 
@@ -32,11 +32,24 @@ router.use(requireShop);
 
 router.get('/shop', (req, res) => res.json(req.shop));
 
+// Update only the shop fields that were sent (also logo_url / cover_url)
 router.put('/shop', async (req, res) => {
-  const { name, tagline, description, location, color } = req.body;
-  if (!name?.trim()) return res.status(400).json({ error: 'Shop name is required.' });
-  await db.query('UPDATE shops SET name=?, tagline=?, description=?, location=?, color=? WHERE id=?',
-    [name.trim(), tagline || null, description || null, location || null, color || '#D9412B', req.shop.id]);
+  const b = req.body, set = {};
+  if ('name' in b) {
+    if (!b.name?.trim()) return res.status(400).json({ error: 'Shop name is required.' });
+    set.name = b.name.trim().slice(0, 100);
+  }
+  for (const k of ['tagline', 'description', 'location']) if (k in b) set[k] = b[k]?.trim() || null;
+  if ('color' in b) set.color = /^#[0-9a-fA-F]{6}$/.test(b.color || '') ? b.color : '#D9412B';
+  for (const k of ['logo_url', 'cover_url']) {
+    if (k in b) {
+      const v = cleanPhoto(b[k]);
+      if (v === undefined) return res.status(400).json({ error: 'That photo link is not allowed.' });
+      set[k] = v;
+    }
+  }
+  const keys = Object.keys(set);
+  if (keys.length) await db.query(`UPDATE shops SET ${keys.map(k => `${k} = ?`).join(', ')} WHERE id = ?`, [...keys.map(k => set[k]), req.shop.id]);
   const [[shop]] = await db.query('SELECT * FROM shops WHERE id = ?', [req.shop.id]);
   res.json(shop);
 });

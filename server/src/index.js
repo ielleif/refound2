@@ -9,6 +9,7 @@ const app = express();
 app.use(cors());
 // Photo uploads arrive as base64 JSON, so that one route accepts bigger bodies.
 app.use('/api/seller/uploads', express.json({ limit: '40mb' }));
+app.use('/api/auth/uploads', express.json({ limit: '20mb' }));
 app.use(express.json({ limit: '1mb' }));
 app.use('/uploads', express.static(require('./images').UPLOAD_DIR, { maxAge: '7d' }));
 
@@ -55,10 +56,12 @@ const server = app.listen(PORT, err => {
   console.log(`RE:FOUND API running on http://localhost:${PORT}`);
   console.log('Keep this window open. Press Ctrl+C to stop.');
   // Check the database right away so problems show up here, not in the browser.
-  require('./images').ensureSchema()
+  db.initDatabase()
+    .then(created => created && console.log('Database was empty - created tables and demo data.'))
+    .then(() => require('./images').ensureSchema())
     .then(() => db.query('SELECT COUNT(*) AS n FROM products'))
     .then(([[r]]) => console.log(`MySQL connected - ${r.n} products in the ${process.env.DB_NAME || 'refound2'} database.`))
-    .catch(e => console.error(`\n!! MySQL problem: ${e.code || e.message}\n   Is MySQL running in XAMPP, and did you import refound2/database/schema.sql?\n`));
+    .catch(e => console.error(`\n!! MySQL problem: ${e.code || e.message}\n   Is MySQL running (XAMPP locally), and are DB_HOST / DB_USER / DB_PASSWORD in server/.env correct?\n`));
 });
 server.on('error', err => {
   if (err.code === 'EADDRINUSE') {

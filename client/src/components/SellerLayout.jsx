@@ -1,5 +1,6 @@
 import { Link, NavLink, Outlet } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import { Avatar } from './Common';
 
 // The seller "page" — reached from the personal account without logging out.
 export default function SellerLayout() {
@@ -12,11 +13,11 @@ export default function SellerLayout() {
         </div>
         <div className="studio-identity">
           <span className="mono-label">Managing as</span>
-          <span className="avatar avatar-sq" style={{ background: shop.color }}>{shop.name[0]}</span>
+          <Avatar src={shop.logo_url} name={shop.name} color={shop.color} square />
           <strong>{shop.name}</strong>
         </div>
         <Link to="/" className="studio-switch" title="Switch back to your personal profile">
-          <span className="avatar">{user.name[0]}</span>
+          <Avatar src={user.avatar_url} name={user.name} />
           <span>Switch to <strong>{user.name.split(' ')[0]}</strong></span>
         </Link>
       </header>

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
 import { useApp } from '../context/AppContext';
-import { ProductCard, Loading } from '../components/Common';
+import { Avatar, ProductCard, Loading } from '../components/Common';
 import { Blob, Bolt, DashArrow, Heart, Polaroid, Pop, Squiggle, Star, Sticker, Tag } from '../components/Deco';
 
 export default function Home() {
@@ -61,7 +61,7 @@ export default function Home() {
                 <Pop tone="mustard" as="span" className="hero-word2">NOSTALGIA</Pop>
                 <span className="hero-here">here.</span>
               </h1>
-              <p className="hero-sub">The marketplace for Filipino things they stopped making: kiddie meal toys, sari-sari wrappers, pagers, komiks and lolo's tin signs.</p>
+              <p className="hero-sub">The marketplace for Filipino things they stopped making: Jollibee mascot toys, super robots, pagers, golden-age komiks, old pesos and lola's heirlooms.</p>
               <div className="hero-cta">
                 <Link to="/shop" className="btn btn-lg">Show all finds <span aria-hidden>↗</span></Link>
                 <Link to={shop ? '/seller' : '/sell'} className="btn btn-lg btn-cream">{shop ? 'Seller Studio' : 'Sell yours'}</Link>
@@ -136,7 +136,7 @@ export default function Home() {
           <div className="lookbook-copy">
             <Tag>Top lookbook</Tag>
             <h2 className="marker">#Throwback90s</h2>
-            <blockquote>“Unbox the decade you grew up in. Pagers that still beep, komiks that still smell like Sunday, and the kiddie meal toys you begged for.”</blockquote>
+            <blockquote>“Unbox the decade you grew up in. Pagers that still beep, komiks that still smell like Sunday, and the Jolly Band toys you begged for.”</blockquote>
             <Link to="/shop?sort=oldest" className="btn btn-cream">Shop by era ↗</Link>
           </div>
         </div>
@@ -151,7 +151,7 @@ export default function Home() {
         <div className="shop-strip">
           {shops.slice(0, 5).map((s, i) => (
             <Link to={`/s/${s.slug}`} key={s.id} className="shop-chip" style={{ '--c': s.color, '--tilt': `${[-3, 2, -1.5, 3, -2][i % 5]}deg` }}>
-              <span className="shop-chip-mark">{s.name[0]}</span>
+              <Avatar src={s.logo_url} name={s.name} color={s.color} square className="shop-chip-mark" />
               <strong>{s.name}</strong>
               <small>{s.tagline || s.location}</small>
               <span className="shop-chip-count">{s.product_count} listings ↗</span>

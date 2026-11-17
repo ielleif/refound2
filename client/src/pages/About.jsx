@@ -5,11 +5,11 @@ import { useApp } from '../context/AppContext';
 import { Bolt, Heart, Polaroid, Pop, Squiggle, Star, Sticker, Tag } from '../components/Deco';
 
 const ERAS = [
-  { era: '60s', title: 'Primers & tin signs', text: 'Abakada primers, enamel store signs and the first soft-drink calendars.', cat: 'print', color: '#B4532A' },
-  { era: '70s', title: 'Sari-sari store fixtures', text: 'Wooden bottle crates, fish-cracker tins and brewery glass mugs.', cat: 'ads', color: '#C8321F' },
-  { era: '80s', title: 'Komiks golden years', text: 'Weekly komiks, tex cards and chocolate wrappers kept in shoeboxes.', cat: 'print', color: '#F2661B' },
-  { era: '90s', title: 'Pagers & kiddie meals', text: 'Pagers, brick games, tamiya kits and fast-food meal toys.', cat: 'gadgets', color: '#F4B532' },
-  { era: '00s', title: 'Bricks & promo shirts', text: 'Indestructible phones, telco promo merch and old snack packaging.', cat: 'merch', color: '#E8452C' },
+  { era: '1900s', title: 'Pesos & cédulas', text: 'US–Philippine silver pesos, McKinley stamps and a 1920 Manila cédula.', cat: 'currency', color: '#B4532A' },
+  { era: '50s', title: 'Komiks golden age', text: 'Hiwaga and Pantastik Komiks, plus Ilang-Ilang movie magazines.', cat: 'print', color: '#C8321F' },
+  { era: '70s', title: 'Super robots', text: 'Die-cast Voltes V and Mazinger Z, the heroes of afternoon TV.', cat: 'toys', color: '#F2661B' },
+  { era: '80s', title: 'Jollibee mascots', text: 'The Jolly Band, Chickee, Lady Moo, Mico and Champ.', cat: 'fastfood', color: '#F4B532' },
+  { era: '90s', title: 'Beepers & virtual pets', text: 'Pagers, Tamagotchi and pocket radios that still work.', cat: 'gadgets', color: '#E8452C' },
 ];
 
 export default function About() {
@@ -41,13 +41,13 @@ export default function About() {
         <div className="about-story-copy">
           <Tag>Our story</Tag>
           <h2 className="display">It started with a shoebox under lola's bed.</h2>
-          <p>Inside were tex cards, a sealed kiddie meal toy, a komiks issue from 1988 and a wrapper from a chocolate bar nobody makes anymore. Every family has a box like that. Most of them end up in the trash.</p>
+          <p>Inside were teks cards, a sealed Jollibee Jolly Band toy, a Hiwaga Komiks from 1956 and lolo's 1920 cédula. Every family has a box like that. Most of them end up in the trash.</p>
           <p><strong>re:found</strong> is a marketplace where those things find a second home. Collectors hunt for the exact toy they had in grade school, and keepers (the people who held on to them) can finally pass them on to someone who cares.</p>
           <p className="about-note">This is a mock e-commerce project: shopping, payments and shipping are all simulated.</p>
         </div>
         <div className="about-story-art" aria-hidden>
-          <Polaroid product={{ category_slug: 'print', art_color: '#F4B532' }} tilt={-7} caption="Komiks, 1988" className="as-p1" />
-          <Polaroid product={{ category_slug: 'toys', art_color: '#C8321F', id: 0 }} tilt={6} caption="Kiddie meal toy" className="as-p2" />
+          <Polaroid product={{ category_slug: 'print', image_url: '/products/hiwaga-komiks-154.jpg' }} tilt={-7} caption="Hiwaga Komiks, 1956" className="as-p1" />
+          <Polaroid product={{ category_slug: 'fastfood', image_url: '/products/jolly-band-jollibee-drummer.jpg' }} tilt={6} caption="Jolly Band drummer" className="as-p2" />
           <Squiggle className="as-sq" color="#C8321F" />
         </div>
       </section>

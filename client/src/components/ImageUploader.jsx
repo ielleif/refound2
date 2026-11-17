@@ -1,13 +1,15 @@
 import { useRef, useState } from 'react';
 import { api } from '../api';
 import { useApp } from '../context/AppContext';
+import { CameraIcon } from './Common';
 
 export const MAX_PHOTOS = 7;
 
-// Shrinks a photo in the browser (max 1600px, JPEG) so uploads stay small and fast.
-function compress(file) {
+// Shrinks a photo in the browser (JPEG) so uploads stay small and fast.
+// square: true crops the centre to a square (used for profile pictures).
+export function compress(file, { max = 1600, square = false } = {}) {
   return new Promise((resolve, reject) => {
-    if (file.type === 'image/gif') { // keep GIFs as-is (may be animated)
+    if (file.type === 'image/gif' && !square) { // keep GIFs as-is (may be animated)
       const r = new FileReader();
       r.onload = () => resolve(r.result);
       r.onerror = reject;
@@ -16,14 +18,17 @@ function compress(file) {
     const img = new Image();
     const url = URL.createObjectURL(file);
     img.onload = () => {
-      const scale = Math.min(1, 1600 / Math.max(img.width, img.height));
+      const side = Math.min(img.width, img.height);
+      const sw = square ? side : img.width, sh = square ? side : img.height;
+      const sx = square ? (img.width - side) / 2 : 0, sy = square ? (img.height - side) / 2 : 0;
+      const scale = Math.min(1, max / Math.max(sw, sh));
       const c = document.createElement('canvas');
-      c.width = Math.round(img.width * scale);
-      c.height = Math.round(img.height * scale);
+      c.width = Math.round(sw * scale);
+      c.height = Math.round(sh * scale);
       const ctx = c.getContext('2d');
       ctx.fillStyle = '#fff';
       ctx.fillRect(0, 0, c.width, c.height);
-      ctx.drawImage(img, 0, 0, c.width, c.height);
+      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, c.width, c.height);
       URL.revokeObjectURL(url);
       resolve(c.toDataURL('image/jpeg', 0.85));
     };
@@ -114,7 +119,8 @@ export default function ImageUploader({ value, onChange }) {
             <><span className="spinner" /> Uploading {busy} photo{busy > 1 ? 's' : ''}…</>
           ) : (
             <>
-              <strong>📷 Click to add photos</strong>
+              <span className="dropzone-ico"><CameraIcon size={26} /></span>
+              <strong>Click to add photos</strong>
               <span>or drag them here · up to {left} more · JPG, PNG, WEBP, GIF</span>
             </>
           )}

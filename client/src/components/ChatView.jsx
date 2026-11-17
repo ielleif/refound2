@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { api, fmtTime, peso } from '../api';
 import { useApp } from '../context/AppContext';
 import ProductArt from './ProductArt';
-import { Empty } from './Common';
+import { Avatar, Empty } from './Common';
 
 // Two-pane inbox used by both buyers (as="buyer") and sellers (as="shop").
 export default function ChatView({ as, activeId, onSelect, basePath, attachProductId }) {
@@ -83,7 +83,9 @@ export default function ChatView({ as, activeId, onSelect, basePath, attachProdu
         )}
         {convs?.map(c => (
           <button key={c.id} className={`chat-item ${String(c.id) === String(activeId) ? 'active' : ''}`} onClick={() => onSelect(c.id)}>
-            <span className="avatar avatar-sq" style={{ background: otherColor(c) }}>{other(c)[0]}</span>
+            {as === 'buyer'
+              ? <Avatar src={c.shop_logo} name={c.shop_name} color={c.shop_color} square />
+              : <Avatar src={c.buyer_avatar} name={c.buyer_name} color={otherColor(c)} />}
             <span className="chat-item-text">
               <strong>{other(c)}</strong>
               <small>{c.last_message || (c.product_name ? `Re: ${c.product_name}` : 'Say hello!')}</small>
@@ -99,9 +101,9 @@ export default function ChatView({ as, activeId, onSelect, basePath, attachProdu
           <>
             <div className="chat-thread-head">
               <Link to={basePath} className="chat-back" aria-label="Back to chats">←</Link>
-              <span className="avatar avatar-sq" style={{ background: as === 'buyer' ? thread.conversation.shop_color : '#2F5D62' }}>
-                {(as === 'buyer' ? thread.conversation.shop_name : thread.conversation.buyer_name)[0]}
-              </span>
+              {as === 'buyer'
+                ? <Avatar src={thread.conversation.shop_logo} name={thread.conversation.shop_name} color={thread.conversation.shop_color} square />
+                : <Avatar src={thread.conversation.buyer_avatar} name={thread.conversation.buyer_name} color="#2F5D62" />}
               <div>
                 <strong>{as === 'buyer' ? thread.conversation.shop_name : thread.conversation.buyer_name}</strong>
                 <small>{as === 'buyer'

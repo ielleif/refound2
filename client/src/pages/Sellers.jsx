@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
-import { Loading } from '../components/Common';
+import { Avatar, Loading } from '../components/Common';
 
 export default function Sellers() {
   const [shops, setShops] = useState(null);
@@ -15,7 +15,9 @@ export default function Sellers() {
         <div className="seller-grid">
           {shops.map(s => (
             <Link to={`/s/${s.slug}`} key={s.id} className="seller-card" style={{ '--c': s.color }}>
-              <div className="seller-card-top"><span className="shop-mark">{s.name[0]}</span></div>
+              <div className={`seller-card-top ${s.cover_url ? 'has-cover' : ''}`} style={{ backgroundImage: s.cover_url ? `url("${s.cover_url}")` : undefined }}>
+                <Avatar src={s.logo_url} name={s.name} color="var(--cream)" square className="shop-mark" />
+              </div>
               <div className="seller-card-body">
                 <h3>{s.name}</h3>
                 <p>{s.tagline || 'New shop on RE:FOUND'}</p>

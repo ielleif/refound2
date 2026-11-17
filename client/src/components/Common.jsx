@@ -11,6 +11,27 @@ export function Logo({ light = false, size = '' }) {
   );
 }
 
+// Camera line icon (uses the text colour of whatever it sits in)
+export function CameraIcon({ size = 18, className = '' }) {
+  return (
+    <svg className={`icon-camera ${className}`} width={size} height={size} viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 7.5h3l1.6-2.5h6.8L17 7.5h3a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5H4A1.5 1.5 0 0 1 2.5 18V9A1.5 1.5 0 0 1 4 7.5z" />
+      <circle cx="12" cy="13" r="3.6" />
+    </svg>
+  );
+}
+
+// Round (people) or rounded-square (shops) picture, falling back to the first letter.
+export function Avatar({ src, name = '?', color, square = false, className = '', size }) {
+  const style = { background: color, ...(size ? { width: size, height: size, fontSize: size * 0.42 } : {}) };
+  return (
+    <span className={`avatar ${square ? 'avatar-sq' : ''} ${src ? 'has-img' : ''} ${className}`} style={style} aria-hidden>
+      {src ? <img src={src} alt="" /> : (name || '?')[0].toUpperCase()}
+    </span>
+  );
+}
+
 export function ProductCard({ p }) {
   const soldOut = p.stock <= 0;
   return (

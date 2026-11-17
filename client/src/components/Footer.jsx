@@ -14,10 +14,12 @@ export default function Footer() {
         </div>
         <div>
           <h4>Shop</h4>
-          <Link to="/shop?category=toys">Toys &amp; Childhood</Link>
-          <Link to="/shop?category=snacks">Snacks &amp; Packaging</Link>
-          <Link to="/shop?category=gadgets">Old Gadgets</Link>
-          <Link to="/shop?category=print">Komiks &amp; Magazines</Link>
+          <Link to="/shop?category=toys">Toys &amp; Action Figures</Link>
+          <Link to="/shop?category=fastfood">Fast-Food Collectibles</Link>
+          <Link to="/shop?category=gadgets">Gadgets &amp; Radios</Link>
+          <Link to="/shop?category=print">Komiks &amp; Posters</Link>
+          <Link to="/shop?category=currency">Coins &amp; Stamps</Link>
+          <Link to="/shop?category=heritage">Antiques &amp; Heritage</Link>
         </div>
         <div>
           <h4>Sell</h4>

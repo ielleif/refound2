@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { api, peso } from '../api';
 import { useApp } from '../context/AppContext';
-import { ProductCard, Loading, Empty } from '../components/Common';
+import { Avatar, ProductCard, Loading, Empty } from '../components/Common';
 import ProductArt from '../components/ProductArt';
 import ImageCarousel from '../components/ImageCarousel';
 
@@ -107,7 +107,7 @@ export default function Product() {
           )}
 
           <div className="seller-box" style={{ '--c': p.shop_color }}>
-            <span className="shop-chip-mark">{p.shop_name[0]}</span>
+            <Avatar src={p.shop_logo} name={p.shop_name} color={p.shop_color} square className="shop-chip-mark" />
             <div>
               <span className="mono-label">Sold by</span>
               <Link to={`/s/${p.shop_slug}`}><strong>{p.shop_name}</strong></Link>

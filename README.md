@@ -4,12 +4,12 @@
 
 re:found is a mock e-commerce marketplace for discontinued Filipino products and collectibles: the things that once sat on a sari-sari shelf, in a lunchbox, or under the bed.
 
-- Vintage toys and childhood collectibles (fast-food kiddie meal toys, tex, teks, tamiya)
-- Discontinued snacks and collectible packaging
-- Old gadgets and electronic devices (pagers, brick phones, walkmans, brick games)
-- Vintage brand merchandise and promotional items
-- Old magazines, books and komiks
-- Advertising memorabilia (tin signs, calendars, store posters)
+- **Toys & Action Figures:** Voltes V, Mazinger Z, Captain Barbell, toy guns, teks cards, a miniature jeepney
+- **Fast-Food Collectibles:** retired Jollibee mascots, including the Jolly Band, Chickee, Lady Moo, Mico and Champ
+- **Gadgets & Radios:** pagers, transistor radios, cassette players, Tamagotchi
+- **Komiks, Magazines & Posters:** Hiwaga and Pantastik Komiks, Lastikman, Ilang-Ilang, movie posters
+- **Coins, Stamps & Documents:** 1903 peso, Dos Mundos pillar dollar, República Filipina notes, cédulas, stamps
+- **Antiques & Heritage:** butaka chair, charcoal and pan irons, Maranao betel nut box
 
 > This is a mock store. Checkout, payment and shipping are all simulated, and no real money is involved.
 
@@ -93,6 +93,20 @@ Then open **<http://localhost:5174>**.
 
 You only need `npm install` the first time.
 
+## Deploy for free (Render + TiDB Cloud)
+
+1. **Database.** On [TiDB Cloud](https://tidbcloud.com), create a free **Starter** instance. Under **Connect**, copy the host, port (4000), user and password.
+2. **Website + server.** On [Render](https://render.com), create a **Web Service** from this GitHub repository and set:
+   - **Build command:** `npm run build`
+   - **Start command:** `npm start`
+   - **Instance type:** Free
+   - **Environment variables:** `DB_HOST`, `DB_PORT` (4000), `DB_USER`, `DB_PASSWORD` from TiDB, plus `DB_NAME=refound2`, `DB_SSL=true` and `JWT_SECRET` (any long random text)
+3. Deploy. On the first start, the server creates the tables and demo data automatically.
+
+Notes:
+- The free Render service sleeps after 15 minutes without visitors, and the first visit after that takes about a minute.
+- Photos uploaded on the live site (new listings, profile pictures) are not kept when the service restarts. The demo product photos are built in and always stay.
+
 ## Demo accounts
 
 All demo passwords are `password123`.
@@ -123,6 +137,7 @@ Nobody runs the demo shops, so they act on their own: their orders move forward 
 │       ├── images.js       # Photo uploads + extra tables
 │       └── routes/         # auth, catalog, shopping, seller, chat
 └── client/                 # React app (Vite)
+    ├── public/products/    # Product photos used by the demo listings
     └── src/
         ├── App.jsx         # Routes
         ├── components/     # Header, Footer, collage decorations, carousel, chat…
