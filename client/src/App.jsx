@@ -4,6 +4,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import SellerLayout from './components/SellerLayout';
 import { RequireAuth } from './components/Common';
+import Disclaimer from './components/Disclaimer';
 
 import Home from './pages/Home';
 import Shop from './pages/Shop';
@@ -58,6 +59,7 @@ export default function App() {
   return (
     <>
       <ScrollTop />
+      <Disclaimer />
       <Routes>
         <Route element={<SiteLayout />}>
           <Route index element={<Home />} />

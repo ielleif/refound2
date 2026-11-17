@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Logo } from './Common';
 import { Squiggle } from './Deco';
+import { showDisclaimer } from './Disclaimer';
 
 export default function Footer() {
   return (
@@ -10,7 +11,10 @@ export default function Footer() {
         <div>
           <Logo />
           <p className="footer-note">Find your Pinoy nostalgia here. A mock marketplace for discontinued Filipino products and collectibles.</p>
-          <p className="footer-mock">Mock e-commerce · No real payments are processed</p>
+          <p className="footer-mock">
+            Mock e-commerce project. Nothing here is actually for sale and no real payments are processed.{' '}
+            <button type="button" className="link-btn footer-mock-link" onClick={showDisclaimer}>About this demo</button>
+          </p>
         </div>
         <div>
           <h4>Shop</h4>
@@ -37,8 +41,8 @@ export default function Footer() {
         <Squiggle className="footer-squiggle" color="#C8321F" />
       </div>
       <div className="footer-base container">
-        <span>© {new Date().getFullYear()} re:found PH</span>
-        <span>Made with nostalgia in Manila</span>
+        <span>© {new Date().getFullYear()} re:found PH · A student/portfolio project</span>
+        <span>Product images © their respective owners. Used for educational purposes only.</span>
       </div>
     </footer>
   );
