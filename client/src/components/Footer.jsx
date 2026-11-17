@@ -32,7 +32,7 @@ export default function Footer() {
           <Link to="/about">About us</Link>
           <Link to="/contact">Contact</Link>
           <Link to="/orders">Track an order</Link>
-          <a href="/#lookbook">Lookbook</a>
+          <Link to="/#lookbook">Lookbook</Link>
         </div>
         <Squiggle className="footer-squiggle" color="#C8321F" />
       </div>

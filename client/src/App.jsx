@@ -38,9 +38,19 @@ function SiteLayout() {
   );
 }
 
+// Scroll to the top on each new page, or to a section when the link has #name (e.g. /#lookbook)
 function ScrollTop() {
-  const { pathname } = useLocation();
-  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  const { pathname, hash } = useLocation();
+  useEffect(() => {
+    if (!hash) { window.scrollTo(0, 0); return; }
+    let tries = 0;
+    const t = setInterval(() => { // the section may appear a moment later, once data loads
+      const el = document.getElementById(hash.slice(1));
+      if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); clearInterval(t); }
+      else if (++tries > 30) clearInterval(t);
+    }, 100);
+    return () => clearInterval(t);
+  }, [pathname, hash]);
   return null;
 }
 

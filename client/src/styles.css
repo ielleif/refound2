@@ -289,6 +289,7 @@ a.polaroid:hover { transform: rotate(0deg) scale(1.04); }
 .cat-blurb { text-align: center; color: var(--ink-3); margin: 0 0 22px; }
 
 /* Lookbook */
+.lookbook { scroll-margin-top: 80px; } /* leave room for the sticky header when jumping here */
 .lookbook { background: var(--cocoa); color: var(--cream); border-block: var(--b); border-top: 8px solid var(--red); padding-block: 70px; position: relative; overflow: hidden; }
 .lookbook::before { content: ''; position: absolute; inset: 0; background-image: var(--dots); background-size: 14px 14px; opacity: .18; }
 .lookbook-inner { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
