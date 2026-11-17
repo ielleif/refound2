@@ -40,13 +40,12 @@ export function Login() {
 
   return (
     <AuthShell title="Welcome back" kicker="Log in"
-      aside={<><h3>Demo accounts</h3><p>Buyer: <code>juan@refound.ph</code><br />Seller: <code>ben@refound.ph</code><br />Password: <code>password123</code></p></>}>
+      aside={<><h3>Good to see you again</h3><p>Pick up where you left off: your cart, your chats with sellers, and the finds you've been eyeing.</p></>}>
       <form onSubmit={submit} className="form">
         {err && <div className="form-error">{err}</div>}
         <label>Email<input type="email" required autoComplete="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} /></label>
         <label>Password<input type="password" required autoComplete="current-password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} /></label>
         <button className="btn btn-lg btn-block" disabled={busy}>{busy ? 'Logging in…' : 'Log in'}</button>
-        <button type="button" className="link-btn" onClick={() => setForm({ email: 'juan@refound.ph', password: 'password123' })}>Fill in demo buyer</button>
       </form>
       <p className="auth-switch">New here? <Link to={`/signup${params.get('next') ? `?next=${encodeURIComponent(params.get('next'))}` : ''}`}>Create an account</Link></p>
     </AuthShell>
