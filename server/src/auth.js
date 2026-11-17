@@ -1,7 +1,9 @@
 const jwt = require('jsonwebtoken');
 const db = require('./db');
 
-const SECRET = process.env.JWT_SECRET || 'refound-dev-secret';
+// The secret signs login tokens. Online it must be set (otherwise anyone could forge a login).
+const SECRET = process.env.JWT_SECRET || (process.env.RENDER || process.env.NODE_ENV === 'production' ? null : 'refound-dev-secret');
+if (!SECRET) throw new Error('JWT_SECRET is not set. Add it as an environment variable.');
 
 function sign(user) {
   return jwt.sign({ id: user.id }, SECRET, { expiresIn: '7d' });

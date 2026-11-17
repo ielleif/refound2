@@ -6,9 +6,23 @@ const cors = require('cors');
 const db = require('./db');
 
 const app = express();
+const { rateLimit, securityHeaders } = require('./security');
+
+// Render (and most hosts) sit behind a proxy: trust it so limits use the visitor's real IP.
+app.set('trust proxy', 1);
+app.disable('x-powered-by');
+app.use(securityHeaders);
 app.use(cors());
+
+// Rate limits (per IP address)
+const minutes = n => n * 60 * 1000;
+app.use('/api/auth/login', rateLimit({ name: 'login', max: 10, windowMs: minutes(15), message: 'Too many login attempts. Please wait 15 minutes and try again.' }));
+app.use('/api/auth/signup', rateLimit({ name: 'sign-up', max: 5, windowMs: minutes(60) }));
+app.use('/api/contact', rateLimit({ name: 'contact', max: 5, windowMs: minutes(10), message: 'You have sent several messages already. Please try again in a few minutes.' }));
+app.use(['/api/auth/uploads', '/api/seller/uploads'], rateLimit({ name: 'upload', max: 40, windowMs: minutes(10) }));
+app.use('/api', rateLimit({ name: 'request', max: 600, windowMs: minutes(5), message: 'Too many requests. Please slow down.' }));
 // Photo uploads arrive as base64 JSON, so that one route accepts bigger bodies.
-app.use('/api/seller/uploads', express.json({ limit: '40mb' }));
+app.use('/api/seller/uploads', express.json({ limit: '25mb' }));
 app.use('/api/auth/uploads', express.json({ limit: '20mb' }));
 app.use(express.json({ limit: '1mb' }));
 app.use('/uploads', express.static(require('./images').UPLOAD_DIR, { maxAge: '7d' }));

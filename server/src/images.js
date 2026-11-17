@@ -49,15 +49,29 @@ function saveUploads(dataUrls) {
     if (!m) throw new Error('Only JPG, PNG, WEBP or GIF photos are allowed.');
     const buf = Buffer.from(m[2], 'base64');
     if (buf.length > MAX_BYTES) throw new Error('One of the photos is too large (max 6 MB).');
+    if (!looksLikeImage(buf, m[1])) throw new Error('One of the files is not a real image.');
     const name = `${Date.now()}-${crypto.randomBytes(6).toString('hex')}.${EXT[m[1]]}`;
     fs.writeFileSync(path.join(UPLOAD_DIR, name), buf);
     return `/uploads/${name}`;
   });
 }
 
+// Checks the file's first bytes, so a renamed non-image file can't be uploaded as a photo.
+function looksLikeImage(buf, type) {
+  const hex = buf.subarray(0, 12).toString('hex');
+  if (type === 'image/jpeg') return hex.startsWith('ffd8ff');
+  if (type === 'image/png') return hex.startsWith('89504e470d0a1a0a');
+  if (type === 'image/gif') return hex.startsWith('474946383');
+  if (type === 'image/webp') return hex.startsWith('52494646') && buf.subarray(8, 12).toString() === 'WEBP';
+  return false;
+}
+
+// Allowed photo addresses: our own folders, or a plain http(s) link with no quotes/brackets.
+const SAFE_URL = /^(\/uploads\/[\w.-]+|\/products\/[\w.-]+|https?:\/\/[^\s"'()<>\\]+)$/;
+
 // Keeps only safe URLs (our uploads or http/https links), max 7.
 const cleanList = list => (Array.isArray(list) ? list : [])
-  .filter(u => typeof u === 'string' && /^(\/uploads\/[\w.-]+|\/products\/[\w.-]+|https?:\/\/\S+)$/.test(u.trim()))
+  .filter(u => typeof u === 'string' && SAFE_URL.test(u.trim()))
   .map(u => u.trim()).slice(0, MAX_IMAGES);
 
 // Replaces a product's photos; the first one becomes the cover (products.image_url).
@@ -87,7 +101,7 @@ async function attachImages(products) {
 function cleanPhoto(u) {
   if (u === null || u === '') return null;
   if (typeof u !== 'string') return undefined;
-  return /^(\/uploads\/[\w.-]+|\/products\/[\w.-]+|https?:\/\/\S+)$/.test(u.trim()) ? u.trim() : undefined;
+  return SAFE_URL.test(u.trim()) ? u.trim() : undefined;
 }
 
 module.exports = { MAX_IMAGES, UPLOAD_DIR, ensureSchema, saveUploads, setProductImages, attachImages, cleanPhoto };
